@@ -1,7 +1,6 @@
-from app.services import app_db
+from app.services import groups_db
 
 from app.model.groupchat import GroupChat
-from .user import get_user
 from uuid import uuid4
 
 
@@ -14,8 +13,10 @@ def add_group_chat(group_chat: GroupChat):
     gc_info = group_chat.dict()
     gc_info["_id"] = str(uuid4())
 
-    app_db.update_one({"username": gc_info['admin']},
-                      {"$push": {"group_chats": gc_info}})
+    groups_db.insert_one(gc_info)
+    group_id = gc_info['_id']
+    gc_admin = gc_info['admin']
+    add_user_to_chat(group_id, gc_admin)
 
 
 def get_user_gc(username: str):
@@ -24,6 +25,11 @@ def get_user_gc(username: str):
     :param username: user's username
     :return: list of groups
     """
-    user = get_user(username=username)
-    users_gc = [gc for gc in user['group_chats']]
-    return users_gc
+    all_groups = groups_db.find()
+    user_groups = [group for group in all_groups if username in group['users']]
+    return user_groups
+
+
+def add_user_to_chat(chat_id: str, username: str):
+    groups_db.update_one({"_id": chat_id},
+                         {"$push": {"users": username}})

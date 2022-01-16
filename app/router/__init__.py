@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from .authentication import router as auth_router
 from .groupchat import router as gc_router
+from .user import router as user_router
 
 
 def configure_routers(app: FastAPI):
@@ -11,3 +12,4 @@ def configure_routers(app: FastAPI):
     """
     app.include_router(auth_router)
     app.include_router(gc_router)
+    app.include_router(user_router)

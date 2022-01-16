@@ -7,7 +7,6 @@ class UserModel(BaseModel):
     password: str
     full_name: str
     last_name: str
-    group_chats: list
     friends: list
 
 
@@ -16,5 +15,4 @@ class UserSchema(BaseModel):
     password: str
     full_name: str
     last_name: str
-    group_chats: list
     friends: list

@@ -23,6 +23,12 @@ class ConnectionManager:
             except:
                 print("Error")
 
+    async def connect_to_group(self, group_id: str, websocket: WebSocket):
+        pass
+
+    async def send_group_message(self, message: str, group_id: str):
+        pass
+
 
 app = FastAPI()
 configure_routers(app)
@@ -33,8 +39,22 @@ manager = ConnectionManager()
 async def websocket_endpoint(websocket: WebSocket, username: str):
     await manager.connect(websocket)
     try:
-        data = await websocket.receive_text()
-        await manager.broadcast(f"{username}: {data}")
+        while True:
+            data = await websocket.receive_text()
+            print("DATA", data)
+            await manager.broadcast(f"{username}: {data}")
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+        await manager.broadcast(f"Client #{username} left the chat")
+
+
+@app.websocket("/ws/{group_id}/{username}")
+async def group_websocket_endpoint(websocket: WebSocket, username: str):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            await manager.broadcast(f"{username}: {data}")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         await manager.broadcast(f"Client #{username} left the chat")

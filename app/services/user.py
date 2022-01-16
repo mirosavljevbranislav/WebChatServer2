@@ -1,4 +1,4 @@
-from app.services import app_db
+from app.services import user_db
 from app.services.authentication import get_password_hash
 
 from app.model.user import UserSchema
@@ -11,7 +11,7 @@ def check_if_user_exists(user_username: str):
     Checks if user already exists in database
     :return: true/false
     """
-    user = app_db.find_one({"username": user_username})
+    user = user_db.find_one({"username": user_username})
     if user:
         return True
     return False
@@ -27,7 +27,7 @@ def store_user(user_data: UserSchema):
         user_dict = user_data.dict()
         user_dict["_id"] = str(uuid4())
         user_dict["password"] = get_password_hash(user_data.password)
-        app_db.insert_one(user_dict)
+        user_db.insert_one(user_dict)
         print({"Message": "User stored successfully!"})
         return True
     else:
@@ -41,7 +41,7 @@ def get_user(username: str):
     :param username:
     :return:
     """
-    user = app_db.find_one({"username": username})
+    user = user_db.find_one({"username": username})
     if user:
         return user
     return {"Message": "User not found"}, 404
