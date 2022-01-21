@@ -7,4 +7,4 @@ class GroupChat(BaseModel):
     name: str
     description: str
     users: list
-    websocket_list: list
+    messages: list

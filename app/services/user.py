@@ -17,6 +17,13 @@ def check_if_user_exists(user_username: str):
     return False
 
 
+def check_if_user_in_friends(username: str, friend: str):
+    user = user_db.find_one({"username": username})
+    if friend in user['friends']:
+        return True
+    return False
+
+
 def store_user(user_data: UserSchema):
     """
     Stores user to database
@@ -35,7 +42,7 @@ def store_user(user_data: UserSchema):
         return False
 
 
-def get_user(username: str):
+def get_user_from_db(username: str):
     """
     This returns whole user if needed
     :param username:
@@ -45,3 +52,27 @@ def get_user(username: str):
     if user:
         return user
     return {"Message": "User not found"}, 404
+
+
+def add_friend_to_db(username_to_add: str, current_user: str):
+    user = get_user_from_db(username=username_to_add)
+    if user:
+        user_db.update_one({"username": current_user},
+                           {"$push": {"friends": username_to_add}})
+        user_db.update_one({"username": username_to_add},
+                           {"$push": {"friends": current_user}})
+
+        return user
+    else:
+        return {"Message": "User not found"}
+
+
+def remove_friend_from_db(friend_to_remove: str, username: str):
+    user_db.update_one({"username": username},
+                       {"$pull": {"friends": friend_to_remove}})
+
+
+def change_user_password(username: str, new_password: str):
+    hashed_password = get_password_hash(new_password)
+    user_db.update_one({"username": username},
+                       {"$set": {"password": hashed_password}})

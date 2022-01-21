@@ -4,3 +4,5 @@ CONNECTION_URI = "mongodb+srv://Bangie:1mirosavljev1@cluster0.zcy3e.mongodb.net/
 client = MongoClient(CONNECTION_URI)
 user_db = client.WebChatApp.Users
 groups_db = client.WebChatApp.Groups
+chat_db = client.WebChatApp.Chats
+global_db = client.WebChatApp.GlobalChat

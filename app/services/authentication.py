@@ -39,7 +39,7 @@ def get_password_hash(password):
 
 
 def authenticate_user(username: str, password: str):
-    user_for_auth = user.get_user(username=username)
+    user_for_auth = user.get_user_from_db(username=username)
     if not user_for_auth:
         return JSONResponse(status_code=HTTP_404_NOT_FOUND, content={"Message": "User not found"})
     if not verify_password(password, user_for_auth["password"]):
@@ -75,7 +75,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    current_user = user.get_user(username=token_data.username)
+    current_user = user.get_user_from_db(username=token_data.username)
     if current_user is None:
         raise credentials_exception
     return current_user

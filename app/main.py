@@ -1,2 +1,4 @@
+import uvicorn
+
 if __name__ == '__main__':
-    pass
+    uvicorn.run('app.server.server:app', reload=True)

@@ -7,6 +7,7 @@ class UserModel(BaseModel):
     password: str
     full_name: str
     last_name: str
+    email: str
     friends: list
 
 
@@ -15,4 +16,5 @@ class UserSchema(BaseModel):
     password: str
     full_name: str
     last_name: str
+    email: str
     friends: list
